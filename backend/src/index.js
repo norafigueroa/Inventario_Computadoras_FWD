@@ -2,6 +2,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import { authRouter } from "./routes/auth.js";
 
 const app = express();
 
@@ -13,7 +14,9 @@ app.get("/api/health", (_req, res) => {
   res.json({ ok: true, servicio: "Inventario FWD API", hora: new Date().toISOString() });
 });
 
-// TODO (Fase 3): montar rutas de autenticación -> app.use("/api/auth", authRouter)
+// Rutas de autenticación (login)
+app.use("/api/auth", authRouter);
+
 // TODO (Fase 4): montar rutas de computadoras -> app.use("/api/computadoras", computadorasRouter)
 
 const PORT = process.env.PORT || 4000;
