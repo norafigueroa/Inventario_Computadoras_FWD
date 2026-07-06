@@ -1,0 +1,87 @@
+// Esquema de la base de datos del inventario de computadoras de FWD.
+// Documentación: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Enums (listas de valores permitidos) ----------
+
+enum Categoria {
+  ESTUDIANTE
+  STAFF
+  PRESTAMO
+  DONACION
+  FUERA_DE_STOCK
+}
+
+enum Sede {
+  EL_HUERTO // Puntarenas
+  LA_IGLESIA // Desamparados
+  NINGUNA
+}
+
+enum Disponibilidad {
+  DISPONIBLE
+  OCUPADA
+}
+
+enum EstadoComputadora {
+  EXCELENTE
+  BUENO
+  REGULAR
+  MALO
+}
+
+enum Rol {
+  ADMIN
+  STAFF
+}
+
+// ---------- Tablas ----------
+
+model Usuario {
+  id           Int      @id @default(autoincrement())
+  nombre       String
+  email        String   @unique
+  passwordHash String
+  rol          Rol      @default(ADMIN)
+  creadoEn     DateTime @default(now())
+}
+
+model Computadora {
+  id             Int            @id @default(autoincrement())
+  marca          String
+  numeroSerie    String         @unique
+  categoria      Categoria      @default(ESTUDIANTE)
+  sede           Sede           @default(NINGUNA)
+  asignadaA      String? // nombre del responsable actual
+  disponibilidad Disponibilidad @default(DISPONIBLE)
+  estado         EstadoComputadora @default(BUENO)
+  bateriaPct     Int? // 0 - 100
+  ubicacion      String? // lugar donde se encuentra
+
+  // Verificación de contraseña
+  passwordVerificada     Boolean   @default(false)
+  passwordVerificadaFecha DateTime?
+
+  // Accesorios (sí/no)
+  tieneMouse     Boolean @default(false)
+  tieneTeclado   Boolean @default(false)
+  tieneCargador  Boolean @default(false)
+  tieneAudifonos Boolean @default(false)
+
+  // Campos según categoría
+  motivoPrestamo   String? // solo si categoria = PRESTAMO
+  datosDonacion    String? // solo si categoria = DONACION
+  comentarioDanio  String? // solo si categoria = FUERA_DE_STOCK
+
+  notas       String?
+  creadoEn    DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+}
