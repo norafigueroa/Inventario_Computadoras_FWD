@@ -13,10 +13,10 @@ const VACIA = {
   bateriaPct: "",
   ubicacion: "",
   passwordVerificada: false,
+  tieneBolso: false,
   tieneMouse: false,
-  tieneTeclado: false,
-  tieneCargador: false,
   tieneAudifonos: false,
+  tieneCargador: false,
   motivoPrestamo: "",
   datosDonacion: "",
   comentarioDanio: "",
@@ -134,10 +134,10 @@ export default function ComputadoraModal({ computadora, onCerrar, onGuardar, onE
           <div className="field field-full">
             <label>Accesorios</label>
             <div className="checks">
+              <label className="check"><input type="checkbox" checked={form.tieneBolso} onChange={set("tieneBolso")} /> Bolso</label>
               <label className="check"><input type="checkbox" checked={form.tieneMouse} onChange={set("tieneMouse")} /> Mouse</label>
-              <label className="check"><input type="checkbox" checked={form.tieneTeclado} onChange={set("tieneTeclado")} /> Teclado</label>
-              <label className="check"><input type="checkbox" checked={form.tieneCargador} onChange={set("tieneCargador")} /> Cargador</label>
               <label className="check"><input type="checkbox" checked={form.tieneAudifonos} onChange={set("tieneAudifonos")} /> Audífonos</label>
+              <label className="check"><input type="checkbox" checked={form.tieneCargador} onChange={set("tieneCargador")} /> Cargador</label>
               <label className="check"><input type="checkbox" checked={form.passwordVerificada} onChange={set("passwordVerificada")} /> Contraseña verificada</label>
             </div>
           </div>

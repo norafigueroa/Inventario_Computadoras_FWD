@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import EnConstruccion from "./pages/EnConstruccion";
 import TablaInventario from "./components/TablaInventario";
+import Accesorios from "./pages/Accesorios";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/prestamos" element={<TablaInventario categoriaFija="PRESTAMO" />} />
         <Route path="/donaciones" element={<TablaInventario categoriaFija="DONACION" />} />
         <Route path="/fuera-de-stock" element={<TablaInventario categoriaFija="FUERA_DE_STOCK" />} />
+        <Route path="/accesorios" element={<Accesorios />} />
         <Route path="/usuarios" element={<EnConstruccion titulo="Usuarios" />} />
       </Route>
 

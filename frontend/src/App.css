@@ -582,19 +582,20 @@
 }
 .tabla thead th {
   text-align: left;
-  padding: 13px 16px;
+  padding: 12px 12px;
   color: var(--text-faint);
   font-weight: 600;
-  font-size: 12px;
+  font-size: 11.5px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
 .tabla tbody td {
-  padding: 13px 16px;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--border);
   color: var(--text);
+  white-space: nowrap;
 }
 .tabla tbody tr:last-child td {
   border-bottom: none;
@@ -620,6 +621,38 @@
   align-items: center;
   gap: 5px;
   color: var(--text-muted);
+}
+
+/* Iconos de accesorios en la tabla */
+.accesorios-icons {
+  display: inline-flex;
+  gap: 6px;
+}
+.acc-ico {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+}
+.acc-si {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+}
+.acc-no {
+  background: var(--bg-elev);
+  color: var(--text-faint);
+  opacity: 0.45;
+}
+
+/* Página de resumen de accesorios */
+.acc-fila-titulo {
+  font-weight: 600;
+}
+.acc-fila-total td {
+  background: var(--bg-elev);
+  font-weight: 700;
+  border-top: 2px solid var(--border-strong);
 }
 
 /* Badges */

@@ -194,8 +194,10 @@ function construir(serie, fila) {
     ubicacion: lugar || null,
     passwordVerificada: verificada,
     passwordVerificadaFecha: fecha,
+    // El bolso no existía en el Excel. Por defecto se asume que sí lo llevan
+    // las computadoras de Estudiante/Staff/Préstamo; Donación y Fuera de stock no.
+    tieneBolso: ["ESTUDIANTE", "STAFF", "PRESTAMO"].includes(categoria),
     tieneMouse,
-    tieneTeclado: false,
     tieneCargador,
     tieneAudifonos,
     motivoPrestamo: null,

@@ -7,6 +7,7 @@ import {
   Repeat,
   Gift,
   Wrench,
+  Backpack,
   Users,
   LogOut,
 } from "lucide-react";
@@ -21,6 +22,7 @@ export const NAV_ITEMS = [
   { to: "/prestamos", label: "Préstamos", icon: Repeat },
   { to: "/donaciones", label: "Donaciones", icon: Gift },
   { to: "/fuera-de-stock", label: "Fuera de stock", icon: Wrench },
+  { to: "/accesorios", label: "Accesorios", icon: Backpack },
 ];
 
 export default function Layout() {

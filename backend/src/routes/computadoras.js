@@ -70,6 +70,43 @@ computadorasRouter.get("/stats", async (_req, res) => {
   });
 });
 
+// GET /api/computadoras/resumen-accesorios  -> conteo de accesorios por categoría (para cada opción de menú)
+computadorasRouter.get("/resumen-accesorios", async (_req, res) => {
+  const filas = await prisma.computadora.findMany({
+    select: {
+      categoria: true,
+      tieneBolso: true,
+      tieneMouse: true,
+      tieneAudifonos: true,
+      tieneCargador: true,
+    },
+  });
+
+  const CATEGORIAS = ["ESTUDIANTE", "STAFF", "PRESTAMO", "DONACION", "FUERA_DE_STOCK"];
+  const vacio = () => ({ total: 0, bolso: 0, mouse: 0, audifonos: 0, cargador: 0 });
+
+  const porCategoria = Object.fromEntries(CATEGORIAS.map((c) => [c, vacio()]));
+  const general = vacio();
+
+  for (const f of filas) {
+    const acc = porCategoria[f.categoria];
+    if (acc) {
+      acc.total++;
+      if (f.tieneBolso) acc.bolso++;
+      if (f.tieneMouse) acc.mouse++;
+      if (f.tieneAudifonos) acc.audifonos++;
+      if (f.tieneCargador) acc.cargador++;
+    }
+    general.total++;
+    if (f.tieneBolso) general.bolso++;
+    if (f.tieneMouse) general.mouse++;
+    if (f.tieneAudifonos) general.audifonos++;
+    if (f.tieneCargador) general.cargador++;
+  }
+
+  res.json({ general, porCategoria });
+});
+
 // ---- Validación de valores permitidos ----
 const CATEGORIAS = ["ESTUDIANTE", "STAFF", "PRESTAMO", "DONACION", "FUERA_DE_STOCK"];
 const SEDES = ["EL_HUERTO", "LA_IGLESIA", "NINGUNA"];
@@ -98,10 +135,10 @@ function sanitizar(body = {}) {
     bateriaPct: bateria,
     ubicacion: txt(body.ubicacion),
     passwordVerificada: Boolean(body.passwordVerificada),
+    tieneBolso: Boolean(body.tieneBolso),
     tieneMouse: Boolean(body.tieneMouse),
-    tieneTeclado: Boolean(body.tieneTeclado),
-    tieneCargador: Boolean(body.tieneCargador),
     tieneAudifonos: Boolean(body.tieneAudifonos),
+    tieneCargador: Boolean(body.tieneCargador),
     motivoPrestamo: txt(body.motivoPrestamo),
     datosDonacion: txt(body.datosDonacion),
     comentarioDanio: txt(body.comentarioDanio),

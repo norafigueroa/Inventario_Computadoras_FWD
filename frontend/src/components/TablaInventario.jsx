@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Search, Plus, Loader2, Laptop, Battery } from "lucide-react";
+import { Search, Plus, Loader2, Laptop, Battery, Backpack, Mouse, Headphones, PlugZap } from "lucide-react";
 import { apiFetch } from "../lib/api";
 import {
   SEDES,
@@ -11,6 +11,29 @@ import {
   ETIQUETA_ESTADO,
 } from "../lib/constantes";
 import ComputadoraModal from "./ComputadoraModal";
+
+const ACCESORIOS_ICONOS = [
+  { campo: "tieneBolso", icono: Backpack, titulo: "Bolso" },
+  { campo: "tieneMouse", icono: Mouse, titulo: "Mouse" },
+  { campo: "tieneAudifonos", icono: Headphones, titulo: "Audífonos" },
+  { campo: "tieneCargador", icono: PlugZap, titulo: "Cargador" },
+];
+
+function AccesoriosIconos({ comp }) {
+  return (
+    <div className="accesorios-icons">
+      {ACCESORIOS_ICONOS.map(({ campo, icono: Icono, titulo }) => (
+        <span
+          key={campo}
+          title={titulo}
+          className={`acc-ico ${comp[campo] ? "acc-si" : "acc-no"}`}
+        >
+          <Icono size={15} />
+        </span>
+      ))}
+    </div>
+  );
+}
 
 export default function TablaInventario({ categoriaFija = null }) {
   const [lista, setLista] = useState([]);
@@ -124,6 +147,7 @@ export default function TablaInventario({ categoriaFija = null }) {
                   <th>Disponibilidad</th>
                   <th>Estado</th>
                   <th>Batería</th>
+                  <th>Accesorios</th>
                 </tr>
               </thead>
               <tbody>
@@ -147,6 +171,7 @@ export default function TablaInventario({ categoriaFija = null }) {
                         <span className="bateria"><Battery size={15} /> {c.bateriaPct}%</span>
                       )}
                     </td>
+                    <td><AccesoriosIconos comp={c} /></td>
                   </tr>
                 ))}
               </tbody>

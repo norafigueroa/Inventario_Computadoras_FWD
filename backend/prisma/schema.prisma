@@ -71,11 +71,11 @@ model Computadora {
   passwordVerificada     Boolean   @default(false)
   passwordVerificadaFecha DateTime?
 
-  // Accesorios (sí/no)
+  // Accesorios (sí/no). Nota: las laptops traen teclado integrado; se registra el bolso.
+  tieneBolso     Boolean @default(false)
   tieneMouse     Boolean @default(false)
-  tieneTeclado   Boolean @default(false)
-  tieneCargador  Boolean @default(false)
   tieneAudifonos Boolean @default(false)
+  tieneCargador  Boolean @default(false)
 
   // Campos según categoría
   motivoPrestamo   String? // solo si categoria = PRESTAMO
