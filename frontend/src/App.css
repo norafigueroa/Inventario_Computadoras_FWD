@@ -295,8 +295,118 @@
   color: var(--accent-hover);
   border-color: rgba(47, 123, 255, 0.25);
 }
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nav-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 6px;
+}
+.nav-logout {
+  background: none;
+  border: 1px solid transparent;
+  width: 100%;
+  text-align: left;
+  font-size: 14.5px;
+}
 .sidebar-spacer {
   flex: 1;
+}
+
+/* ---------- Dashboard ---------- */
+.section-hint {
+  color: var(--text-muted);
+  font-size: 14.5px;
+  margin: 0 0 22px;
+}
+.block-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 28px 0 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.stat-grid.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  transition: border-color 0.15s, transform 0.1s;
+}
+.stat-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+.stat-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+.stat-icon.tone-accent {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+}
+.stat-icon.tone-success {
+  background: rgba(35, 192, 135, 0.14);
+  color: var(--success);
+}
+.stat-icon.tone-warning {
+  background: rgba(234, 179, 8, 0.14);
+  color: var(--warning);
+}
+.stat-icon.tone-danger {
+  background: rgba(240, 85, 109, 0.14);
+  color: var(--danger);
+}
+.stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+}
+.stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+.dash-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+}
+
+@media (max-width: 1100px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dash-columns {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+@media (max-width: 560px) {
+  .stat-grid,
+  .stat-grid.two {
+    grid-template-columns: 1fr;
+  }
 }
 
 .main {

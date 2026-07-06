@@ -3,6 +3,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { authRouter } from "./routes/auth.js";
+import { computadorasRouter } from "./routes/computadoras.js";
 
 const app = express();
 
@@ -17,7 +18,8 @@ app.get("/api/health", (_req, res) => {
 // Rutas de autenticación (login)
 app.use("/api/auth", authRouter);
 
-// TODO (Fase 4): montar rutas de computadoras -> app.use("/api/computadoras", computadorasRouter)
+// Rutas de computadoras (inventario y estadísticas)
+app.use("/api/computadoras", computadorasRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

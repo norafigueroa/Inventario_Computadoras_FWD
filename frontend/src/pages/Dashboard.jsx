@@ -1,60 +1,94 @@
-import { Laptop, LayoutDashboard, Users, LogOut, Construction } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import Logo from "../components/Logo";
+import { useEffect, useState } from "react";
+import {
+  Laptop,
+  CircleCheck,
+  CircleDot,
+  BatteryLow,
+  KeyRound,
+  GraduationCap,
+  Briefcase,
+  Repeat,
+  Gift,
+  Wrench,
+  MapPin,
+  Loader2,
+} from "lucide-react";
+import { apiFetch } from "../lib/api";
+
+function StatCard({ icon: Icon, label, value, tone = "accent" }) {
+  return (
+    <div className="stat-card">
+      <div className={`stat-icon tone-${tone}`}>
+        <Icon size={22} />
+      </div>
+      <div className="stat-body">
+        <div className="stat-value">{value}</div>
+        <div className="stat-label">{label}</div>
+      </div>
+    </div>
+  );
+}
 
 export default function Dashboard() {
-  const { usuario, logout } = useAuth();
-  const iniciales = (usuario?.nombre || "?")
-    .split(" ")
-    .map((p) => p[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+  const [stats, setStats] = useState(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    apiFetch("/computadoras/stats")
+      .then(setStats)
+      .catch((e) => setError(e.message));
+  }, []);
+
+  if (error) {
+    return <div className="alert-error">{error}</div>;
+  }
+
+  if (!stats) {
+    return (
+      <div className="full-loader" style={{ minHeight: "50vh" }}>
+        <Loader2 size={26} style={{ animation: "spin 0.7s linear infinite" }} />
+        <span>Cargando estadísticas…</span>
+      </div>
+    );
+  }
 
   return (
-    <div className="app-shell">
-      <aside className="sidebar">
-        <Logo />
-        <a className="nav-item active">
-          <LayoutDashboard size={19} /> Inventario
-        </a>
-        <a className="nav-item">
-          <Laptop size={19} /> Computadoras
-        </a>
-        <a className="nav-item">
-          <Users size={19} /> Usuarios
-        </a>
-        <div className="sidebar-spacer" />
-        <button className="nav-item" onClick={logout} style={{ background: "none", border: "1px solid transparent", width: "100%", textAlign: "left" }}>
-          <LogOut size={19} /> Cerrar sesión
-        </button>
-      </aside>
+    <div className="dashboard">
+      <p className="section-hint">Resumen general del inventario de computadoras.</p>
 
-      <div className="main">
-        <header className="topbar">
-          <h1>Inventario de computadoras</h1>
-          <div className="user-chip">
-            <div className="user-meta">
-              <div className="n">{usuario?.nombre}</div>
-              <div className="r">{usuario?.rol}</div>
-            </div>
-            <div className="user-avatar">{iniciales}</div>
-            <button className="btn-ghost" onClick={logout}>
-              <LogOut size={16} /> Salir
-            </button>
-          </div>
-        </header>
+      {/* Métricas principales */}
+      <div className="stat-grid">
+        <StatCard icon={Laptop} label="Total de computadoras" value={stats.total} tone="accent" />
+        <StatCard icon={CircleCheck} label="Disponibles" value={stats.disponibles} tone="success" />
+        <StatCard icon={CircleDot} label="Ocupadas" value={stats.ocupadas} tone="warning" />
+        <StatCard icon={Wrench} label="Fuera de stock" value={stats.porCategoria.FUERA_DE_STOCK} tone="danger" />
+      </div>
 
-        <main className="content">
-          <div className="placeholder-box">
-            <span className="ic"><Construction size={28} /></span>
-            <h3>Aquí vivirá el inventario</h3>
-            <p>
-              En la siguiente fase construiremos la tabla de computadoras con
-              búsqueda, filtros y la opción de agregar, editar y eliminar equipos.
-            </p>
+      {/* Por categoría */}
+      <h2 className="block-title">Por categoría</h2>
+      <div className="stat-grid">
+        <StatCard icon={GraduationCap} label="Estudiantes" value={stats.porCategoria.ESTUDIANTE} />
+        <StatCard icon={Briefcase} label="Staff" value={stats.porCategoria.STAFF} />
+        <StatCard icon={Repeat} label="Préstamos" value={stats.porCategoria.PRESTAMO} />
+        <StatCard icon={Gift} label="Donaciones" value={stats.porCategoria.DONACION} />
+      </div>
+
+      {/* Por sede + alertas */}
+      <div className="dash-columns">
+        <div>
+          <h2 className="block-title">Por sede</h2>
+          <div className="stat-grid two">
+            <StatCard icon={MapPin} label="El Huerto (Puntarenas)" value={stats.porSede.EL_HUERTO} />
+            <StatCard icon={MapPin} label="La Iglesia (Desamparados)" value={stats.porSede.LA_IGLESIA} />
           </div>
-        </main>
+        </div>
+        <div>
+          <h2 className="block-title">Alertas</h2>
+          <div className="stat-grid two">
+            <StatCard icon={BatteryLow} label="Batería baja (menos de 20%)" value={stats.bateriaBaja} tone="warning" />
+            <StatCard icon={KeyRound} label="Contraseña sin verificar" value={stats.passwordSinVerificar} tone="danger" />
+          </div>
+        </div>
       </div>
     </div>
   );
