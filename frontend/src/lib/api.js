@@ -1,5 +1,7 @@
 // Cliente para hablar con el backend. Adjunta el token de sesión si existe.
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+// En producción (Vercel), el backend vive en el mismo dominio bajo /api.
+// En desarrollo local, apunta al servidor Express en localhost:4000.
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? "/api" : "http://localhost:4000/api");
 
 const TOKEN_KEY = "fwd_token";
 

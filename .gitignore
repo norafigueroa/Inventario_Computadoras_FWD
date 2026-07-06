@@ -32,6 +32,9 @@ build/
 *.pyc
 __pycache__/
 
+# Vercel (configuración local de despliegue)
+.vercel/
+
 # Bases de datos locales
 *.sqlite
 *.sqlite3
