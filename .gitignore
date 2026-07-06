@@ -41,3 +41,7 @@ __pycache__/
 # Se mantienen solo localmente para la migración, no se publican.
 _inventario_actual.xlsx
 _xlsx_extract/
+_datos_migracion.json
+_extraer_datos.ps1
+_analizar*.mjs
+_ubicar.mjs

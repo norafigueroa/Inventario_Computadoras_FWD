@@ -69,3 +69,102 @@ computadorasRouter.get("/stats", async (_req, res) => {
     },
   });
 });
+
+// ---- Validación de valores permitidos ----
+const CATEGORIAS = ["ESTUDIANTE", "STAFF", "PRESTAMO", "DONACION", "FUERA_DE_STOCK"];
+const SEDES = ["EL_HUERTO", "LA_IGLESIA", "NINGUNA"];
+const DISPONIBILIDADES = ["DISPONIBLE", "OCUPADA"];
+const ESTADOS = ["EXCELENTE", "BUENO", "REGULAR", "MALO"];
+
+// Limpia y valida el cuerpo recibido para crear/editar una computadora.
+function sanitizar(body = {}) {
+  const txt = (v) => (v == null || String(v).trim() === "" ? null : String(v).trim());
+  const enumOr = (v, lista, def) => (lista.includes(v) ? v : def);
+
+  let bateria = null;
+  if (body.bateriaPct !== "" && body.bateriaPct != null) {
+    const n = Math.round(Number(body.bateriaPct));
+    if (!Number.isNaN(n)) bateria = Math.max(0, Math.min(100, n));
+  }
+
+  return {
+    marca: txt(body.marca) || "Sin marca",
+    numeroSerie: txt(body.numeroSerie),
+    categoria: enumOr(body.categoria, CATEGORIAS, "ESTUDIANTE"),
+    sede: enumOr(body.sede, SEDES, "NINGUNA"),
+    asignadaA: txt(body.asignadaA),
+    disponibilidad: enumOr(body.disponibilidad, DISPONIBILIDADES, "DISPONIBLE"),
+    estado: enumOr(body.estado, ESTADOS, "BUENO"),
+    bateriaPct: bateria,
+    ubicacion: txt(body.ubicacion),
+    passwordVerificada: Boolean(body.passwordVerificada),
+    tieneMouse: Boolean(body.tieneMouse),
+    tieneTeclado: Boolean(body.tieneTeclado),
+    tieneCargador: Boolean(body.tieneCargador),
+    tieneAudifonos: Boolean(body.tieneAudifonos),
+    motivoPrestamo: txt(body.motivoPrestamo),
+    datosDonacion: txt(body.datosDonacion),
+    comentarioDanio: txt(body.comentarioDanio),
+    notas: txt(body.notas),
+  };
+}
+
+// GET /api/computadoras/:id  -> una computadora
+computadorasRouter.get("/:id", async (req, res) => {
+  const comp = await prisma.computadora.findUnique({ where: { id: Number(req.params.id) } });
+  if (!comp) return res.status(404).json({ error: "Computadora no encontrada" });
+  res.json({ computadora: comp });
+});
+
+// POST /api/computadoras  -> crear
+computadorasRouter.post("/", async (req, res) => {
+  const datos = sanitizar(req.body);
+  if (!datos.numeroSerie) {
+    return res.status(400).json({ error: "El número de serie es obligatorio" });
+  }
+  try {
+    const computadora = await prisma.computadora.create({ data: datos });
+    res.status(201).json({ computadora });
+  } catch (e) {
+    if (e.code === "P2002") {
+      return res.status(409).json({ error: "Ya existe una computadora con ese número de serie" });
+    }
+    throw e;
+  }
+});
+
+// PUT /api/computadoras/:id  -> editar
+computadorasRouter.put("/:id", async (req, res) => {
+  const datos = sanitizar(req.body);
+  if (!datos.numeroSerie) {
+    return res.status(400).json({ error: "El número de serie es obligatorio" });
+  }
+  try {
+    const computadora = await prisma.computadora.update({
+      where: { id: Number(req.params.id) },
+      data: datos,
+    });
+    res.json({ computadora });
+  } catch (e) {
+    if (e.code === "P2002") {
+      return res.status(409).json({ error: "Ya existe una computadora con ese número de serie" });
+    }
+    if (e.code === "P2025") {
+      return res.status(404).json({ error: "Computadora no encontrada" });
+    }
+    throw e;
+  }
+});
+
+// DELETE /api/computadoras/:id  -> eliminar
+computadorasRouter.delete("/:id", async (req, res) => {
+  try {
+    await prisma.computadora.delete({ where: { id: Number(req.params.id) } });
+    res.json({ ok: true });
+  } catch (e) {
+    if (e.code === "P2025") {
+      return res.status(404).json({ error: "Computadora no encontrada" });
+    }
+    throw e;
+  }
+});
