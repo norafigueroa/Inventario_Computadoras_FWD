@@ -44,7 +44,7 @@ npm run dev            # http://localhost:5173
 ## Estado del proyecto
 
 - [x] Fase 1 — Base del proyecto (estructura, backend + frontend iniciales)
-- [ ] Fase 2 — Base de datos (Supabase + tablas)
+- [x] Fase 2 — Base de datos (Supabase + tablas)
 - [ ] Fase 3 — Login
 - [ ] Fase 4 — CRUD de computadoras
 - [ ] Fase 5 — Migración de datos del Excel
