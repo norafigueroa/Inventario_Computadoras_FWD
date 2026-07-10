@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -10,6 +11,8 @@ import {
   Backpack,
   Users,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import Logo from "./Logo";
@@ -28,6 +31,12 @@ export const NAV_ITEMS = [
 export default function Layout() {
   const { usuario, logout } = useAuth();
   const location = useLocation();
+  const [menuAbierto, setMenuAbierto] = useState(false);
+
+  // Cierra el menú móvil automáticamente al cambiar de página.
+  useEffect(() => {
+    setMenuAbierto(false);
+  }, [location.pathname]);
 
   const activo =
     NAV_ITEMS.find((n) => (n.end ? location.pathname === n.to : location.pathname.startsWith(n.to))) ||
@@ -43,8 +52,15 @@ export default function Layout() {
 
   return (
     <div className="app-shell">
-      <aside className="sidebar">
-        <Logo />
+      {menuAbierto && <div className="sidebar-backdrop" onClick={() => setMenuAbierto(false)} />}
+
+      <aside className={`sidebar ${menuAbierto ? "sidebar-open" : ""}`}>
+        <div className="sidebar-head">
+          <Logo />
+          <button className="icon-btn sidebar-close" onClick={() => setMenuAbierto(false)} aria-label="Cerrar menú">
+            <X size={20} />
+          </button>
+        </div>
         <nav className="nav">
           {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
             <NavLink key={to} to={to} end={end} className="nav-item">
@@ -64,15 +80,20 @@ export default function Layout() {
 
       <div className="main">
         <header className="topbar">
-          <h1>{titulo}</h1>
+          <div className="topbar-left">
+            <button className="icon-btn hamburger-btn" onClick={() => setMenuAbierto(true)} aria-label="Abrir menú">
+              <Menu size={22} />
+            </button>
+            <h1>{titulo}</h1>
+          </div>
           <div className="user-chip">
             <div className="user-meta">
               <div className="n">{usuario?.nombre}</div>
               <div className="r">{usuario?.rol}</div>
             </div>
             <div className="user-avatar">{iniciales}</div>
-            <button className="btn-ghost" onClick={logout}>
-              <LogOut size={16} /> Salir
+            <button className="btn-ghost btn-salir-texto" onClick={logout}>
+              <LogOut size={16} /> <span>Salir</span>
             </button>
           </div>
         </header>
