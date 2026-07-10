@@ -31,3 +31,11 @@ export const ETIQUETA_CATEGORIA = mapear(CATEGORIAS);
 export const ETIQUETA_SEDE = mapear(SEDES);
 export const ETIQUETA_DISPONIBILIDAD = mapear(DISPONIBILIDADES);
 export const ETIQUETA_ESTADO = mapear(ESTADOS);
+
+// Textos que no cuentan como un nombre real de responsable (igual que en el backend).
+const NOMBRE_PLACEHOLDERS = new Set(["n/a", "na", "ninguno", "ninguna", "no aplica", "-"]);
+export function esNombreValido(v) {
+  const t = (v || "").trim();
+  if (!t) return false;
+  return !NOMBRE_PLACEHOLDERS.has(t.toLowerCase());
+}

@@ -110,8 +110,15 @@ computadorasRouter.get("/resumen-accesorios", async (_req, res) => {
 // ---- Validación de valores permitidos ----
 const CATEGORIAS = ["ESTUDIANTE", "STAFF", "PRESTAMO", "DONACION", "FUERA_DE_STOCK"];
 const SEDES = ["EL_HUERTO", "LA_IGLESIA", "NINGUNA"];
-const DISPONIBILIDADES = ["DISPONIBLE", "OCUPADA"];
 const ESTADOS = ["EXCELENTE", "BUENO", "REGULAR", "MALO"];
+
+// Textos que no cuentan como un nombre real de responsable.
+const NOMBRE_PLACEHOLDERS = new Set(["n/a", "na", "ninguno", "ninguna", "no aplica", "-"]);
+function nombreValido(v) {
+  const t = (v || "").trim();
+  if (!t) return false;
+  return !NOMBRE_PLACEHOLDERS.has(t.toLowerCase());
+}
 
 // Limpia y valida el cuerpo recibido para crear/editar una computadora.
 function sanitizar(body = {}) {
@@ -124,13 +131,19 @@ function sanitizar(body = {}) {
     if (!Number.isNaN(n)) bateria = Math.max(0, Math.min(100, n));
   }
 
+  // La disponibilidad no se recibe del cliente: se calcula siempre a partir
+  // de si hay o no una persona real asignada, para que nunca queden
+  // desincronizados "tiene responsable" y "está disponible".
+  const asignadaARaw = txt(body.asignadaA);
+  const asignadaA = nombreValido(asignadaARaw) ? asignadaARaw : null;
+
   return {
     marca: txt(body.marca) || "Sin marca",
     numeroSerie: txt(body.numeroSerie),
     categoria: enumOr(body.categoria, CATEGORIAS, "ESTUDIANTE"),
     sede: enumOr(body.sede, SEDES, "NINGUNA"),
-    asignadaA: txt(body.asignadaA),
-    disponibilidad: enumOr(body.disponibilidad, DISPONIBILIDADES, "DISPONIBLE"),
+    asignadaA,
+    disponibilidad: asignadaA ? "OCUPADA" : "DISPONIBLE",
     estado: enumOr(body.estado, ESTADOS, "BUENO"),
     bateriaPct: bateria,
     ubicacion: txt(body.ubicacion),

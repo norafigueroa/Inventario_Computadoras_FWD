@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { X, Save, Trash2, Loader2, AlertCircle } from "lucide-react";
-import { CATEGORIAS, SEDES, DISPONIBILIDADES, ESTADOS } from "../lib/constantes";
+import { X, Save, Trash2, Loader2, AlertCircle, CircleCheck, CircleDot } from "lucide-react";
+import { CATEGORIAS, SEDES, ESTADOS, esNombreValido } from "../lib/constantes";
 
 const VACIA = {
   marca: "",
@@ -33,6 +33,9 @@ export default function ComputadoraModal({ computadora, onCerrar, onGuardar, onE
     const v = e.target.type === "checkbox" ? e.target.checked : e.target.value;
     setForm((f) => ({ ...f, [campo]: v }));
   };
+
+  // La disponibilidad no se elige a mano: se calcula según si hay un responsable real.
+  const ocupada = esNombreValido(form.asignadaA);
 
   async function guardar(e) {
     e.preventDefault();
@@ -90,9 +93,11 @@ export default function ComputadoraModal({ computadora, onCerrar, onGuardar, onE
             </div>
             <div className="field">
               <label>Disponibilidad</label>
-              <select value={form.disponibilidad} onChange={set("disponibilidad")}>
-                {DISPONIBILIDADES.map((o) => <option key={o.valor} value={o.valor}>{o.etiqueta}</option>)}
-              </select>
+              <div className={`badge disponibilidad-calculada ${ocupada ? "badge-amber" : "badge-green"}`}>
+                {ocupada ? <CircleDot size={14} /> : <CircleCheck size={14} />}
+                {ocupada ? "Ocupada" : "Disponible"}
+              </div>
+              <p className="field-hint">Se calcula sola según si hay un responsable asignado.</p>
             </div>
             <div className="field">
               <label>Estado de la computadora</label>
